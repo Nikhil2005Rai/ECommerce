@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Item = (props) => {
   return (
-    <div className="item">
+    <div className="item" onClick={window.scrollTo(0,0)}>
       <Link to={`/product/${props.id}`} style={{all: "unset"}}>
         <img src={props.image} alt="" />
 
