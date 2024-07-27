@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary, deleteImageByUrl } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Product } from "../models/product.model.js";
@@ -61,14 +61,17 @@ const deleteProduct = asyncHandler(async (req, res) => {
       .json(new ApiError(400, null, "Product ID is required"));
   }
 
-  const product = await Product.findByIdAndDelete(
+  const product = await Product.findById(new mongoose.Types.ObjectId(_id));
+
+  await deleteImageByUrl(product.image);
+  console.log(product);
+
+  const deletedProduct = await Product.findByIdAndDelete(
     new mongoose.Types.ObjectId(_id)
   );
 
-  if (!product) {
-    return res
-      .status(404)
-      .json(new ApiError(404, null, "Product not found"));
+  if (!deletedProduct) {
+    return res.status(404).json(new ApiError(404, null, "Product not found"));
   }
 
   return res
@@ -77,13 +80,11 @@ const deleteProduct = asyncHandler(async (req, res) => {
 });
 
 const getAllProducts = asyncHandler(async (req, res) => {
-  let products = await Product.find({})
+  let products = await Product.find({});
 
   return res
-  .status(200)
-  .json(
-    new ApiResponse(200, products, "Products retrieved successfully")
-  )
-})
+    .status(200)
+    .json(new ApiResponse(200, products, "Products retrieved successfully"));
+});
 
 export { addProduct, deleteProduct, getAllProducts };
