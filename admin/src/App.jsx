@@ -1,10 +1,14 @@
-import './App.css'
+import Navbar from './Components/Navbar/Navbar'
+import Admin from './Pages/Admin/Admin'
 
 function App() {
 
   return (
-    <>Hello</>
-  )
+    <>
+      <Navbar />
+      <Admin />
+    </>
+  );
 }
 
 export default App
