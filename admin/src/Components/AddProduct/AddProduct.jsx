@@ -23,7 +23,7 @@ const AddProduct = () => {
   };
 
   const addProduct = async () => {
-    console.log(productDetails);
+    // console.log(productDetails);
     const formData = new FormData();
     formData.append("name", productDetails.name);
     formData.append("category", productDetails.category);
@@ -43,7 +43,7 @@ const AddProduct = () => {
           },
         }
       );
-      console.log(response.data);
+      // console.log(response.data);
       alert("Product added successfully!");
 
       setProductDetails({
