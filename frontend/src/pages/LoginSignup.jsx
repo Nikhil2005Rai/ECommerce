@@ -10,7 +10,7 @@ const LoginSignup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [agree, setAgree] = useState(false);
-  const { isAuthenticated, login } = useAuth();
+  const { login } = useAuth();
 
   const navigate = useNavigate(); // Use navigate hook
 
@@ -56,7 +56,6 @@ const LoginSignup = () => {
         )
         .then((res) => {
           console.log(res);
-          alert("User logged in successfully");
           login()
           navigate("/");
         })

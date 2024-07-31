@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { Product } from './../models/product.model.js';
+import { Product } from "./../models/product.model.js";
 
 const generateAccessAndRefereshToken = async (userId) => {
   try {
@@ -139,23 +139,43 @@ const addToCart = asyncHandler(async (req, res) => {
     (item) => item.product.toString() === productId
   );
 
-  if(existingProduct){
+  if (existingProduct) {
     existingProduct.quantity += 1;
   } else {
     user.cart.push({ product: productId, quantity: 1 });
   }
 
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user.cart, "Product added to cart"));
+});
+
+const removeFromCart = asyncHandler(async (req, res) => {
+  const { productId } = req.body;
+
+  if (!productId) {
+    throw new ApiError(400, "ProductId is required");
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  user.cart = user.cart.filter((item) => item.product.toString() != productId);
+
   await user.save({validateBeforeSave: false});
 
   return res
   .status(200)
-  .json(new ApiResponse(200, user.cart, "Product added to cart"))
-
+  .json(new ApiResponse(200, user.cart, "Product removed from cart successfully"))
 });
 
 const getCartItems = asyncHandler(async (req, res) => {
   const user = req.user;
-  if(!user){
+  if (!user) {
     throw new ApiError(401, "Unauthorized");
   }
   const cartItems = user.cart;
@@ -175,7 +195,13 @@ const getCartItems = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(200, cartItemsWithDetails, "Cart fetched successfully")
     );
+});
 
-})
-
-export { registerUser, loginUser, logoutUser, addToCart, getCartItems };
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  addToCart,
+  removeFromCart,
+  getCartItems,
+};

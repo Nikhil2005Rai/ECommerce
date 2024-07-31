@@ -4,12 +4,19 @@ import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { ShopContext } from "../../context/ShopContext";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const ProductDisplay = (props) => {
   const { product } = props;
-  
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { setCartItems } = useContext(ShopContext);
+
+
+
   const addToCart = async (id) => {
-    // console.log(id)
     const token = Cookies.get("accessToken");
     await axios
       .post(
@@ -21,10 +28,20 @@ const ProductDisplay = (props) => {
       )
       .then((res) => {
         console.log(res);
+        // setCartItems(res.data.data);
         alert("Product added to cart successfully");
       })
       .catch((err) => console.error(err));
   };
+
+    const handleClick = (id) => {
+      console.log(isAuthenticated)
+      if (isAuthenticated) {
+        addToCart(id);
+      } else {
+        navigate("/login");
+      }
+    };
   return (
     <div className="productdisplay">
       <div className="productdisplay-left">
@@ -76,7 +93,7 @@ const ProductDisplay = (props) => {
         </div>
         <button
           onClick={() => {
-            addToCart(product._id);
+            handleClick(product._id);
           }}
         >
           ADD TO CART

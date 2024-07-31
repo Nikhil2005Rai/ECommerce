@@ -7,3 +7,9 @@
 body {
   font-family: "poppins", sans-serif;
 }
+
+@media (max-width:1920px){
+  body{
+    zoom: 80%;
+  }
+}

@@ -6,13 +6,13 @@ import remove_icon from "../../assets/cart_cross_icon.png";
 
 const Cartitems = () => {
 
-  const { cartItems, getCart, getTotalCartAmount } = useContext(ShopContext);
+  const { cartItems, getCart, getTotalCartAmount, removeFromCart } =
+    useContext(ShopContext);
+
 
   useEffect(() => {
-    getCart()
-  }, []);
-
-  const removeFromCart = () => {}
+    getCart();
+  }, [cartItems]);
 
   return (
     <div className="cartitems">
@@ -46,7 +46,7 @@ const Cartitems = () => {
                   className="cartitems-remove-icon"
                   src={remove_icon}
                   onClick={() => {
-                    removeFromCart(item.id);
+                    removeFromCart(item.product);
                   }}
                   alt=""
                 />

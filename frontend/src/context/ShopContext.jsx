@@ -1,53 +1,76 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useAuth } from "./AuthContext";
 
 export const ShopContext = createContext(null);
 
 const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState([]);
   const [all_product, setAllProducts] = useState([]);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/api/v1/products/allProducts")
-      .then((res) => {
-        setAllProducts(res.data.data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+    const getAllProducts = async () => {
+      await axios
+        .get("http://localhost:8000/api/v1/products/allProducts")
+        .then((res) => {
+          setAllProducts(res.data.data);
+        })
+        .catch((err) => console.error(err));
+    };
+    getAllProducts();
+  },[]);
 
-  const getCart = (itemId) => {
+  const getCart = () => {
     const token = Cookies.get("accessToken");
-    axios
-      .get("http://localhost:8000/api/v1/user/getCartItems", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    isAuthenticated &&
+      (async () =>
+        await axios
+          .get("http://localhost:8000/api/v1/user/getCartItems", {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((res) => {
+            setCartItems(res.data.data);
+          })
+          .catch((err) => console.error(err)))();
+  };
+
+  const removeFromCart = async (itemId) => {
+    const token = Cookies.get("accessToken");
+    console.log(cartItems);
+    await axios
+      .post(
+        "http://localhost:8000/api/v1/user/removeFromCart",
+        {
+          productId: itemId,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .then((res) => {
-        setCartItems(res.data.data);
+        console.log("response: ", res.data.data);
       })
       .catch((err) => console.error(err));
   };
 
-  
-  const removeFromCart = (itemId) => {};
-
   const getTotalCartAmount = () => {
-
     return cartItems.reduce((total, item) => {
       return total + item.quantity * item.productDetails.new_price;
     }, 0);
   };
 
   const getTotalCartItems = () => {
-     return cartItems.reduce((total, item) => {
-       return total + item.quantity;
-     }, 0);
+    return cartItems.reduce((total, item) => {
+      return total + item.quantity;
+    }, 0);
   };
 
   const contextValue = {
     all_product,
     cartItems,
+    setCartItems,
     getCart,
     removeFromCart,
     getTotalCartAmount,

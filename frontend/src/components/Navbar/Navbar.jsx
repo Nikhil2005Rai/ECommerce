@@ -12,11 +12,13 @@ import { useAuth } from "../../context/AuthContext";
 const Navbar = () => {
   const [menu, setMenu] = useState("shop");
   const { isAuthenticated, login, logout } = useAuth();
-  const { getTotalCartItems , getCart} = useContext(ShopContext);
+  const { cartItems, getCart, setCartItems } = useContext(ShopContext);
   const menuRef = useRef();
-  useEffect(() => {
-    getCart();
-  }, []);
+
+  // console.log(cartItems)
+  
+
+
   useEffect(() => {
     const token = Cookies.get("accessToken");
     if (!!token) login();
@@ -32,6 +34,7 @@ const Navbar = () => {
       .then(() => {
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
+        setCartItems([]);
         logout();
       })
       .catch((err) => {
@@ -137,7 +140,7 @@ const Navbar = () => {
             }}
           />
         </Link>
-        <div className="nav-cart-count">{getTotalCartItems()}</div>
+        <div className="nav-cart-count">{cartItems.length}</div>
       </div>
     </div>
   );
