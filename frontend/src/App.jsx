@@ -10,6 +10,7 @@ import { RouterProvider, createBrowserRouter, Outlet } from "react-router-dom";
 import men_bannar from './assets/banner_mens.png'
 import women_bannar from './assets/banner_women.png'
 import kid_bannar from './assets/banner_kids.png'
+import { useAuth } from "./context/AuthContext";
 
 const Layout = () => {
   return (
@@ -22,6 +23,7 @@ const Layout = () => {
 };
 
 const App = () => {
+  const {isAuthenticated} = useAuth()
   const router = createBrowserRouter([
     {
       path: "/",

@@ -3,6 +3,7 @@ import './Item.css'
 import { Link } from 'react-router-dom';
 
 const Item = (props) => {
+  // console.log(props._id)
   return (
     <div className="item" onClick={window.scrollTo(0,0)}>
       <Link to={`/product/${props.id}`} style={{all: "unset"}}>

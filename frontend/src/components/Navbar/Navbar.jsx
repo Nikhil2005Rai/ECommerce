@@ -1,20 +1,48 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
 import logo from "../../assets/logo.png";
 import cart_icon from "../../assets/cart_icon.png";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { ShopContext } from "../../context/ShopContext";
-import nav_dropdown from  '../../assets/nav_dropdown.png'
+import nav_dropdown from "../../assets/nav_dropdown.png";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
   const [menu, setMenu] = useState("shop");
-  const { getTotalCartItems } = useContext(ShopContext);
-  const menuRef = useRef()
+  const { isAuthenticated, login, logout } = useAuth();
+  const { getTotalCartItems , getCart} = useContext(ShopContext);
+  const menuRef = useRef();
+  useEffect(() => {
+    getCart();
+  }, []);
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (!!token) login();
+  }, [login]);
+
+  const handleLogout = () => {
+    axios
+      .post(
+        "http://localhost:8000/api/v1/user/logout",
+        {},
+        { withCredentials: true }
+      )
+      .then(() => {
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
+        logout();
+      })
+      .catch((err) => {
+        console.error("Logout error", err);
+      });
+  };
 
   const dropdown_toggle = (e) => {
-    menuRef.current.classList.toggle('nav-menu-visible');
-    e.target.classList.toggle('open');
-  }
+    menuRef.current.classList.toggle("nav-menu-visible");
+    e.target.classList.toggle("open");
+  };
 
   return (
     <div className="navbar">
@@ -29,7 +57,12 @@ const Navbar = () => {
           <p className="">SHOPPER</p>
         </div>
       </Link>
-      <img src={nav_dropdown} alt="" onClick={dropdown_toggle} className="nav-dropdown"/>
+      <img
+        src={nav_dropdown}
+        alt=""
+        onClick={dropdown_toggle}
+        className="nav-dropdown"
+      />
       <ul className="nav-menu" ref={menuRef}>
         <li
           className=""
@@ -79,16 +112,20 @@ const Navbar = () => {
         </li>
       </ul>
       <div className="nav-login-cart">
-        <Link to="/login">
-          <button
-            className=""
-            onClick={() => {
-              setMenu("");
-            }}
-          >
-            Login
-          </button>
-        </Link>
+        {isAuthenticated ? (
+          <button onClick={handleLogout}>Logout</button>
+        ) : (
+          <Link to="/login">
+            <button
+              className=""
+              onClick={() => {
+                setMenu("");
+              }}
+            >
+              Login
+            </button>
+          </Link>
+        )}
 
         <Link to="/cart">
           <img

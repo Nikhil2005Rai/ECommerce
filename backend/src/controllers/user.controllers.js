@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { Product } from './../models/product.model.js';
 
 const generateAccessAndRefereshToken = async (userId) => {
   try {
@@ -35,7 +36,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    username: username.toLowerCase(),
+    username,
     email,
     password,
   });
@@ -81,7 +82,7 @@ const loginUser = asyncHandler(async (req, res) => {
   );
 
   const options = {
-    httpOnly: true,
+    httpOnly: false,
     secure: true,
   };
 
@@ -99,28 +100,82 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-    await User.findByIdAndUpdate(
-      req.user._id,
-      {
-        $unset: {
-          refreshToken: 1,
-        },
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: 1,
       },
-      {
-        new: true,
-      }
+    },
+    {
+      new: true,
+    }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
+});
+
+const addToCart = asyncHandler(async (req, res) => {
+  const { productId } = req.body;
+  if (!productId) {
+    throw new ApiError(400, "Product ID is required");
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const existingProduct = user.cart.find(
+    (item) => item.product.toString() === productId
+  );
+
+  if(existingProduct){
+    existingProduct.quantity += 1;
+  } else {
+    user.cart.push({ product: productId, quantity: 1 });
+  }
+
+  await user.save({validateBeforeSave: false});
+
+  return res
+  .status(200)
+  .json(new ApiResponse(200, user.cart, "Product added to cart"))
+
+});
+
+const getCartItems = asyncHandler(async (req, res) => {
+  const user = req.user;
+  if(!user){
+    throw new ApiError(401, "Unauthorized");
+  }
+  const cartItems = user.cart;
+
+  const cartItemsWithDetails = await Promise.all(
+    cartItems.map(async (item) => {
+      const productDetails = await Product.findById(item.product);
+      return {
+        ...item._doc, // Include all existing properties of the cart item
+        productDetails, // Add product details
+      };
+    })
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, cartItemsWithDetails, "Cart fetched successfully")
     );
 
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
-
-    return res
-      .status(200)
-      .clearCookie("accessToken", options)
-      .clearCookie("refreshToken", options)
-      .json(new ApiResponse(200, {}, "User logged Out"));
 })
 
-export { registerUser, loginUser, logoutUser };
+export { registerUser, loginUser, logoutUser, addToCart, getCartItems };

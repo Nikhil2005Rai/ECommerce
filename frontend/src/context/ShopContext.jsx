@@ -1,54 +1,54 @@
-import React, { createContext, useState } from "react";
-import all_product from "./../assets/all_product";
+import React, { createContext, useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 export const ShopContext = createContext(null);
 
-const getDefaultCart = () => {
-  let cart = {};
-  for (let index = 0; index < all_product.length + 1; index++) {
-    cart[index] = 0;
-    //key -> productId : value -> Quantity
-  }
-  return cart;
-};
-
 const ShopContextProvider = (props) => {
-  const [cartItems, setCartItems] = useState(getDefaultCart());
+  const [cartItems, setCartItems] = useState([]);
+  const [all_product, setAllProducts] = useState([]);
 
-  const addToCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    console.log(cartItems);
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/v1/products/allProducts")
+      .then((res) => {
+        setAllProducts(res.data.data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const getCart = (itemId) => {
+    const token = Cookies.get("accessToken");
+    axios
+      .get("http://localhost:8000/api/v1/user/getCartItems", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setCartItems(res.data.data);
+      })
+      .catch((err) => console.error(err));
   };
-  const removeFromCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-  };
+
+  
+  const removeFromCart = (itemId) => {};
 
   const getTotalCartAmount = () => {
-    let totalAmount = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        let itemInfo = all_product.find(
-          (product) => product.id === Number(item)
-        );
-        totalAmount += itemInfo.new_price * cartItems[item];
-        console.log(totalAmount)
-      }
-    }
-    return totalAmount;
+
+    return cartItems.reduce((total, item) => {
+      return total + item.quantity * item.productDetails.new_price;
+    }, 0);
   };
 
   const getTotalCartItems = () => {
-    let totalItem = 0;
-    for (const item in cartItems) {
-      if(cartItems[item]>0) totalItem += cartItems[item];
-    }
-    return totalItem;
-  }
+     return cartItems.reduce((total, item) => {
+       return total + item.quantity;
+     }, 0);
+  };
 
   const contextValue = {
     all_product,
     cartItems,
-    addToCart,
+    getCart,
     removeFromCart,
     getTotalCartAmount,
     getTotalCartItems,

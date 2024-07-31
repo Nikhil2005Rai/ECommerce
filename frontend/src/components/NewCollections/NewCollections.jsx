@@ -1,18 +1,25 @@
-import React from 'react'
-import './NewCollections.css'
-import new_collection from './../../assets/new_collections'
-import Item from './../Item/Item';
+import React, { useEffect, useState } from "react";
+import "./NewCollections.css";
+import Item from "./../Item/Item";
+import axios from "axios";
 
 const NewCollections = () => {
+  const [newCollection, setNewCollection] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/v1/products/newCollections")
+      .then((res) => setNewCollection(res.data.data))
+      .catch((err) => console.error(err));
+  }, []);
   return (
     <div className="new-collections">
       <h1>NEW COLLECTIONS</h1>
       <hr />
       <div className="collections">
-        {new_collection.map((item, i) => (
+        {newCollection.map((item, i) => (
           <Item
             key={i}
-            id={item.id}
+            id={item._id}
             name={item.name}
             image={item.image}
             new_price={item.new_price}
@@ -22,6 +29,6 @@ const NewCollections = () => {
       </div>
     </div>
   );
-}
+};
 
-export default NewCollections
+export default NewCollections;

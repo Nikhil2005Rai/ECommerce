@@ -1,18 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./RelatedProducts.css";
-import Item from '../Item/Item'
-import data_product from '../../assets/data'
-const RelatedProduct = () => {
+import Item from "../Item/Item";
+import axios from "axios";
+const RelatedProduct = (props) => {
+  const { product } = props
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  
+  useEffect(() => {
+    axios
+      .post(
+        "http://localhost:8000/api/v1/products/relatedProducts",
+        {category: product.category}
+      )
+      .then((res) => setRelatedProducts(res.data.data))
+      .catch((err) => console.error(err));
+  }, [product]);
   return (
     <div className="relatedproducts">
       <h1>Related Products</h1>
       <hr />
       <div className="relatedproducts-item">
-        {data_product.map((item, i) => {
+        {relatedProducts.map((item, i) => {
           return (
             <Item
               key={i}
-              id={item.id}
+              id={item._id}
               name={item.name}
               image={item.image}
               new_price={item.new_price}

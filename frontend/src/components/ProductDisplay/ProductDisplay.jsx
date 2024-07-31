@@ -2,11 +2,29 @@ import React, { useContext } from "react";
 import "./ProductDisplay.css";
 import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
-import { ShopContext } from "../../context/ShopContext";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const ProductDisplay = (props) => {
   const { product } = props;
-  const { addToCart } = useContext(ShopContext);
+  
+  const addToCart = async (id) => {
+    // console.log(id)
+    const token = Cookies.get("accessToken");
+    await axios
+      .post(
+        "http://localhost:8000/api/v1/user/addToCart",
+        { productId: id },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        alert("Product added to cart successfully");
+      })
+      .catch((err) => console.error(err));
+  };
   return (
     <div className="productdisplay">
       <div className="productdisplay-left">
@@ -56,7 +74,13 @@ const ProductDisplay = (props) => {
             <div>XXL</div>
           </div>
         </div>
-        <button onClick={() => {addToCart(product.id)}}>ADD TO CART</button>
+        <button
+          onClick={() => {
+            addToCart(product._id);
+          }}
+        >
+          ADD TO CART
+        </button>
         <p className="productdisplay-right-category">
           <span>Category :</span>Women, T-Shirt, Crop Top
         </p>

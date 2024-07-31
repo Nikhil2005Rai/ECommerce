@@ -87,4 +87,55 @@ const getAllProducts = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, products, "Products retrieved successfully"));
 });
 
-export { addProduct, deleteProduct, getAllProducts };
+const getNewCollections = asyncHandler(async (_, res) => {
+  const products = await Product.find({});
+  let NewCollections = products.slice(-8);
+  console.log(NewCollections);
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        NewCollections,
+        "NewCollections fetched successfully"
+      )
+    );
+});
+
+const getPopularInWomen = asyncHandler(async (_, res) => {
+  let products = await Product.find({ category: "women" });
+  let popularInWomen = products.slice(0, 4);
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        popularInWomen,
+        "Popular in women fetched successfully"
+      )
+    );
+});
+
+const getRelatedProducts = asyncHandler(async (req, res) => {
+  const { category } = req.body;
+  let products = await Product.find({ category: category });
+  let relatedProducts = products.slice(0, 4);
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        relatedProducts,
+        "Related Products fetched successfully"
+      )
+    );
+});
+
+export {
+  addProduct,
+  deleteProduct,
+  getAllProducts,
+  getNewCollections,
+  getPopularInWomen,
+  getRelatedProducts,
+};
