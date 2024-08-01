@@ -12,17 +12,18 @@ import { useAuth } from "../../context/AuthContext";
 const Navbar = () => {
   const [menu, setMenu] = useState("shop");
   const { isAuthenticated, login, logout } = useAuth();
-  const { cartItems, getCart, setCartItems } = useContext(ShopContext);
+  const { setCartItems, getTotalCartItems } =
+    useContext(ShopContext);
   const menuRef = useRef();
-
-  // console.log(cartItems)
-  
-
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
     if (!!token) login();
-  }, [login]);
+  }, []);
+  //TODO: Check it later
+  // useEffect(() => {
+  //   isAuthenticated && getCart();
+  // }, [cartItems]);
 
   const handleLogout = () => {
     axios
@@ -130,17 +131,23 @@ const Navbar = () => {
           </Link>
         )}
 
-        <Link to="/cart">
-          <img
-            src={cart_icon}
-            alt=""
-            className="w-8"
-            onClick={() => {
-              setMenu("");
-            }}
-          />
-        </Link>
-        <div className="nav-cart-count">{cartItems.length}</div>
+        {isAuthenticated ? (
+          <>
+            <Link to="/cart">
+              <img
+                src={cart_icon}
+                alt=""
+                className="w-8"
+                onClick={() => {
+                  setMenu("");
+                }}
+              />
+            </Link>
+            <div className="nav-cart-count">{getTotalCartItems()}</div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

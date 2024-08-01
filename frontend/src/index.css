@@ -13,3 +13,8 @@ body {
     zoom: 80%;
   }
 }
+@media (max-width: 1280px){
+  body{
+    zoom: 100%;
+  }
+}

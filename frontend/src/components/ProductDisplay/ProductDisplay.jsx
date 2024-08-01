@@ -12,30 +12,10 @@ const ProductDisplay = (props) => {
   const { product } = props;
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { setCartItems } = useContext(ShopContext);
+  const { addToCart } = useContext(ShopContext);
 
-
-
-  const addToCart = async (id) => {
-    const token = Cookies.get("accessToken");
-    await axios
-      .post(
-        "http://localhost:8000/api/v1/user/addToCart",
-        { productId: id },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        // setCartItems(res.data.data);
-        alert("Product added to cart successfully");
-      })
-      .catch((err) => console.error(err));
-  };
 
     const handleClick = (id) => {
-      console.log(isAuthenticated)
       if (isAuthenticated) {
         addToCart(id);
       } else {

@@ -3,16 +3,27 @@ import "./CartItems.css";
 import { useContext } from "react";
 import { ShopContext } from "../../context/ShopContext";
 import remove_icon from "../../assets/cart_cross_icon.png";
+import { useAuth } from "../../context/AuthContext";
 
 const Cartitems = () => {
+  const {
+    cartItems,
+    setCartItems,
+    getCart,
+    getTotalCartAmount,
+    removeFromCart,
+    addTo
+  } = useContext(ShopContext);
 
-  const { cartItems, getCart, getTotalCartAmount, removeFromCart } =
-    useContext(ShopContext);
+  const { isAuthenticated } = useAuth();
 
+  // useEffect(() => {
+  //   getCart();
+  // }, []);
 
   useEffect(() => {
-    getCart();
-  }, [cartItems]);
+    if (!isAuthenticated) setCartItems([]);
+  }, [isAuthenticated]);
 
   return (
     <div className="cartitems">
@@ -26,34 +37,32 @@ const Cartitems = () => {
       </div>
       <hr />
       {cartItems.map((item) => {
-          return (
-            <div key={item.product}>
-              <div className="cartitems-format cartitems-format-main">
-                <img
-                  src={item.productDetails.image}
-                  alt=""
-                  className="carticon-product-icon"
-                />
-                <p>{item.productDetails.name}</p>
-                <p>${item.productDetails.new_price}</p>
-                <button className="cartitems-quantity">{item.quantity}</button>
-                <p>
-                  $
-                  {Number(item.productDetails.new_price) *
-                    Number(item.quantity)}
-                </p>
-                <img
-                  className="cartitems-remove-icon"
-                  src={remove_icon}
-                  onClick={() => {
-                    removeFromCart(item.product);
-                  }}
-                  alt=""
-                />
-              </div>
-              <hr />
+        return (
+          <div key={item.product}>
+            <div className="cartitems-format cartitems-format-main">
+              <img
+                src={item.productDetails.image}
+                alt=""
+                className="carticon-product-icon"
+              />
+              <p>{item.productDetails.name}</p>
+              <p>${item.productDetails.new_price}</p>
+              <button className="cartitems-quantity">{item.quantity}</button>
+              <p>
+                ${Number(item.productDetails.new_price) * Number(item.quantity)}
+              </p>
+              <img
+                className="cartitems-remove-icon"
+                src={remove_icon}
+                onClick={() => {
+                  removeFromCart(item.product);
+                }}
+                alt=""
+              />
             </div>
-          );
+            <hr />
+          </div>
+        );
         return null;
       })}
       <div className="cartitems-down">

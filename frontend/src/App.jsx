@@ -24,6 +24,7 @@ const Layout = () => {
 
 const App = () => {
   const {isAuthenticated} = useAuth()
+  
   const router = createBrowserRouter([
     {
       path: "/",

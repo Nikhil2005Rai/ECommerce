@@ -17,12 +17,12 @@ const LoginSignup = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted", {
-      username,
-      email,
-      password,
-      agree,
-    });
+    // console.log("Form submitted", {
+    //   username,
+    //   email,
+    //   password,
+    //   agree,
+    // });
 
     //SignUP
     if (state === "Signup") {
@@ -55,7 +55,7 @@ const LoginSignup = () => {
           { withCredentials: true }
         )
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           login()
           navigate("/");
         })

@@ -20,7 +20,7 @@ const ShopContextProvider = (props) => {
         .catch((err) => console.error(err));
     };
     getAllProducts();
-  },[]);
+  }, []);
 
   const getCart = () => {
     const token = Cookies.get("accessToken");
@@ -35,7 +35,27 @@ const ShopContextProvider = (props) => {
           })
           .catch((err) => console.error(err)))();
   };
-
+  useEffect(() => {
+    isAuthenticated && getCart();
+  }, [isAuthenticated]);
+  const addToCart = async (id) => {
+    const token = Cookies.get("accessToken");
+    await axios
+      .post(
+        "http://localhost:8000/api/v1/user/addToCart",
+        { productId: id },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        // console.log(res);
+        // setCartItems(res.data.data);
+        // alert("Product added to cart successfully");
+        getCart()
+      })
+      .catch((err) => console.error(err));
+  };
   const removeFromCart = async (itemId) => {
     const token = Cookies.get("accessToken");
     console.log(cartItems);
@@ -51,6 +71,7 @@ const ShopContextProvider = (props) => {
       )
       .then((res) => {
         console.log("response: ", res.data.data);
+        getCart()
       })
       .catch((err) => console.error(err));
   };
@@ -72,6 +93,7 @@ const ShopContextProvider = (props) => {
     cartItems,
     setCartItems,
     getCart,
+    addToCart,
     removeFromCart,
     getTotalCartAmount,
     getTotalCartItems,
