@@ -58,7 +58,7 @@ const ShopContextProvider = (props) => {
   };
   const removeFromCart = async (itemId) => {
     const token = Cookies.get("accessToken");
-    console.log(cartItems);
+    // console.log(cartItems);
     await axios
       .post(
         "http://localhost:8000/api/v1/user/removeFromCart",

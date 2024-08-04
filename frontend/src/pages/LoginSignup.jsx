@@ -33,7 +33,7 @@ const LoginSignup = () => {
           password,
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           alert("User registered successfully");
           setState("Login");
         })
@@ -56,7 +56,7 @@ const LoginSignup = () => {
         )
         .then((res) => {
           // console.log(res);
-          login()
+          login();
           navigate("/");
         })
         .catch((err) => {

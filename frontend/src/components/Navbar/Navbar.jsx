@@ -12,18 +12,13 @@ import { useAuth } from "../../context/AuthContext";
 const Navbar = () => {
   const [menu, setMenu] = useState("shop");
   const { isAuthenticated, login, logout } = useAuth();
-  const { setCartItems, getTotalCartItems } =
-    useContext(ShopContext);
+  const { setCartItems, getTotalCartItems } = useContext(ShopContext);
   const menuRef = useRef();
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
     if (!!token) login();
   }, []);
-  //TODO: Check it later
-  // useEffect(() => {
-  //   isAuthenticated && getCart();
-  // }, [cartItems]);
 
   const handleLogout = () => {
     axios
