@@ -23,7 +23,7 @@ const Navbar = () => {
   const handleLogout = () => {
     axios
       .post(
-        "http://localhost:8000/api/v1/user/logout",
+        "/user/logout",
         {},
         { withCredentials: true }
       )

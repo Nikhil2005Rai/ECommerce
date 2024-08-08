@@ -9,7 +9,7 @@ const RelatedProduct = (props) => {
   useEffect(() => {
     axios
       .post(
-        "http://localhost:8000/api/v1/products/relatedProducts",
+        "/products/relatedProducts",
         {category: product.category}
       )
       .then((res) => setRelatedProducts(res.data.data))

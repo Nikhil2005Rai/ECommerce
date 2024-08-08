@@ -10,8 +10,8 @@ import { RouterProvider, createBrowserRouter, Outlet } from "react-router-dom";
 import men_bannar from './assets/banner_mens.png'
 import women_bannar from './assets/banner_women.png'
 import kid_bannar from './assets/banner_kids.png'
-import { useAuth } from "./context/AuthContext";
 import axios from "axios";
+
 
 const Layout = () => {
   return (
@@ -24,7 +24,7 @@ const Layout = () => {
 };
 
 const App = () => {
-  const {isAuthenticated} = useAuth()
+  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL
   
   
   const router = createBrowserRouter([

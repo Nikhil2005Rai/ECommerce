@@ -13,7 +13,7 @@ const ShopContextProvider = (props) => {
   useEffect(() => {
     const getAllProducts = async () => {
       await axios
-        .get("http://localhost:8000/api/v1/products/allProducts")
+        .get("/products/allProducts")
         .then((res) => {
           setAllProducts(res.data.data);
         })
@@ -23,11 +23,13 @@ const ShopContextProvider = (props) => {
   }, []);
 
   const getCart = () => {
+
     const token = Cookies.get("accessToken");
+    console.log(token)
     isAuthenticated &&
       (async () =>
         await axios
-          .get("http://localhost:8000/api/v1/user/getCartItems", {
+          .get("/user/getCartItems", {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then((res) => {
@@ -42,7 +44,7 @@ const ShopContextProvider = (props) => {
     const token = Cookies.get("accessToken");
     await axios
       .post(
-        "http://localhost:8000/api/v1/user/addToCart",
+        "/user/addToCart",
         { productId: id },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -61,7 +63,7 @@ const ShopContextProvider = (props) => {
     // console.log(cartItems);
     await axios
       .post(
-        "http://localhost:8000/api/v1/user/removeFromCart",
+        "/user/removeFromCart",
         {
           productId: itemId,
         },

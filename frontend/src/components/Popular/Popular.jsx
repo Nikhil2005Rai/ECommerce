@@ -6,7 +6,7 @@ const Popular = () => {
   const [popular, setPopular] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/v1/products/popularInWomen")
+      .get("/products/popularInWomen")
       .then((res) => setPopular(res.data.data))
       .catch((err) => console.error(err));
   }, []);

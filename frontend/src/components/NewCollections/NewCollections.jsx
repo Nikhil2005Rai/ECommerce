@@ -7,7 +7,7 @@ const NewCollections = () => {
   const [newCollection, setNewCollection] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/v1/products/newCollections")
+      .get("/products/newCollections")
       .then((res) => setNewCollection(res.data.data))
       .catch((err) => console.error(err));
   }, []);

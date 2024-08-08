@@ -27,7 +27,7 @@ const LoginSignup = () => {
     //SignUP
     if (state === "Signup") {
       axios
-        .post("http://localhost:8000/api/v1/user/register", {
+        .post("/user/register", {
           username,
           email,
           password,
@@ -47,7 +47,7 @@ const LoginSignup = () => {
     if (state === "Login") {
       axios
         .post(
-          "http://localhost:8000/api/v1/user/login",
+          "/user/login",
           {
             email,
             password,
