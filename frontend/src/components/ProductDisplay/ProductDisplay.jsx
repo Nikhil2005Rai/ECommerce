@@ -2,8 +2,7 @@ import React, { useContext } from "react";
 import "./ProductDisplay.css";
 import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
-import axios from "axios";
-import Cookies from "js-cookie";
+
 import { ShopContext } from "../../context/ShopContext";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
