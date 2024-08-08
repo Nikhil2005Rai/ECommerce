@@ -9,7 +9,7 @@ const ListProduct = () => {
   const fetchInfo = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/v1/products/allProducts"
+        "/products/allProducts"
       );
       setAllProducts(response.data.data);
     } catch (error) {
@@ -20,7 +20,7 @@ const ListProduct = () => {
 
   const removeProduct = async (_id) => {
     try {
-      axios.post("http://localhost:8000/api/v1/products/deleteProduct",{_id});
+      axios.post("/products/deleteProduct",{_id});
       alert("Product removed successfully!!!")
     } catch (error) {
       console.error(error);
