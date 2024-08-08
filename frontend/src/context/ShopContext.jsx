@@ -30,7 +30,7 @@ const ShopContextProvider = (props) => {
       (async () =>
         await axios
           .get("/user/getCartItems", {
-            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true,
           })
           .then((res) => {
             setCartItems(res.data.data);
