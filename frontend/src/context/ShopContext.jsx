@@ -23,14 +23,15 @@ const ShopContextProvider = (props) => {
   }, []);
 
   const getCart = () => {
+      console.log(document.cookie)
 
     const token = Cookies.get("accessToken");
     console.log(token)
     isAuthenticated &&
       (async () =>
         await axios
-          .get("/user/getCartItems", {
-            withCredentials: true,
+          .get("/user/getCartItems",{
+            withCredentials: true
           })
           .then((res) => {
             setCartItems(res.data.data);

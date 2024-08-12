@@ -82,7 +82,7 @@ const loginUser = asyncHandler(async (req, res) => {
   );
 
   const options = {
-    httpOnly: true,
+    httpOnly: false,
     secure: true,
   };
 
