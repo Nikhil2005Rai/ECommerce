@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { useAuth } from "./AuthContext";
 
 export const ShopContext = createContext(null);
@@ -22,30 +21,26 @@ const ShopContextProvider = (props) => {
     getAllProducts();
   }, []);
 
-  const getCart = () => {
- 
-    isAuthenticated &&
-      (async () =>
-        await axios
-          .get("/user/getCartItems",{
-            withCredentials: true
-          })
-          .then((res) => {
-            setCartItems(res.data.data);
-          })
-          .catch((err) => console.error(err)))();
+  const getCart = async () => {
+      await axios
+        .get("/user/getCartItems",{
+          withCredentials: true
+        })
+        .then((res) => {
+          setCartItems(res.data.data);
+        })
+        .catch((err) => console.error(err));
   };
-  useEffect(() => {
-    isAuthenticated && getCart();
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   isAuthenticated && getCart();
+  // }, [isAuthenticated]);
   const addToCart = async (id) => {
-    const token = Cookies.get("accessToken");
     await axios
       .post(
         "/user/addToCart",
         { productId: id },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true
         }
       )
       .then((res) => {
@@ -57,7 +52,6 @@ const ShopContextProvider = (props) => {
       .catch((err) => console.error(err));
   };
   const removeFromCart = async (itemId) => {
-    const token = Cookies.get("accessToken");
     // console.log(cartItems);
     await axios
       .post(
@@ -66,7 +60,7 @@ const ShopContextProvider = (props) => {
           productId: itemId,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true
         }
       )
       .then((res) => {

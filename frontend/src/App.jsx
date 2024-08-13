@@ -24,8 +24,8 @@ const Layout = () => {
 };
 
 const App = () => {
-  // axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL
-  axios.defaults.baseURL = "http://localhost:8000/api/v1"
+  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL
+  // axios.defaults.baseURL = "http://localhost:8000/api/v1"
   
   
   const router = createBrowserRouter([

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./CSS/LoginSignup.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ShopContext } from "../context/ShopContext";
 
 const LoginSignup = () => {
   const [state, setState] = useState("Login");
@@ -11,6 +12,7 @@ const LoginSignup = () => {
   const [password, setPassword] = useState("");
   const [agree, setAgree] = useState(false);
   const { login } = useAuth();
+  const {getCart} = useContext(ShopContext)
 
   const navigate = useNavigate(); // Use navigate hook
 
@@ -35,7 +37,8 @@ const LoginSignup = () => {
         .then((res) => {
           // console.log(res);
           alert("User registered successfully");
-          setState("Login");
+          setState("Login")
+          
         })
         .catch((err) => {
           console.error(err);
@@ -58,6 +61,8 @@ const LoginSignup = () => {
           // console.log(res);
           login();
           navigate("/");
+        }).then(() => {
+          getCart()
         })
         .catch((err) => {
           console.error(err);

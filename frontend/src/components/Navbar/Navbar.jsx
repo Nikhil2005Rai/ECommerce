@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { ShopContext } from "../../context/ShopContext";
 import nav_dropdown from "../../assets/nav_dropdown.png";
-import Cookies from "js-cookie";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 
@@ -15,11 +14,6 @@ const Navbar = () => {
   const { setCartItems, getTotalCartItems } = useContext(ShopContext);
   const menuRef = useRef();
 
-  useEffect(() => {
-    const token = Cookies.get("accessToken");
-    if (!!token) login();
-  }, []);
-
   const handleLogout = () => {
     axios
       .post(
@@ -28,8 +22,6 @@ const Navbar = () => {
         { withCredentials: true }
       )
       .then(() => {
-        Cookies.remove("accessToken");
-        Cookies.remove("refreshToken");
         setCartItems([]);
         logout();
       })
@@ -126,7 +118,7 @@ const Navbar = () => {
           </Link>
         )}
 
-        {isAuthenticated ? (
+        {isAuthenticated && (
           <>
             <Link to="/cart">
               <img
@@ -140,9 +132,7 @@ const Navbar = () => {
             </Link>
             <div className="nav-cart-count">{getTotalCartItems()}</div>
           </>
-        ) : (
-          <></>
-        )}
+        ) }
       </div>
     </div>
   );
