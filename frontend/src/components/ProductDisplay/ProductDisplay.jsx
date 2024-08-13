@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import "./ProductDisplay.css";
 import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
@@ -12,11 +12,15 @@ const ProductDisplay = (props) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { addToCart } = useContext(ShopContext);
+  const [loading, setLoading] = useState(false);
 
 
-    const handleClick = (id) => {
+
+    const handleClick = async (id) => {
       if (isAuthenticated) {
-        addToCart(id);
+        setLoading(true);
+        await addToCart(id);
+        setLoading(false);
       } else {
         navigate("/login");
       }
@@ -70,13 +74,12 @@ const ProductDisplay = (props) => {
             <div>XXL</div>
           </div>
         </div>
-        <button
-          onClick={() => {
-            handleClick(product._id);
-          }}
-        >
-          ADD TO CART
-        </button>
+       <button
+        onClick={() => handleClick(product._id)}
+        disabled={loading} // Disable the button while loading
+      >
+        {loading ? "Loading..." : "ADD TO CART"}
+      </button>
         <p className="productdisplay-right-category">
           <span>Category :</span>Women, T-Shirt, Crop Top
         </p>
